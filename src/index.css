@@ -35,6 +35,12 @@ button[disabled],button.disabled {
 	cursor: default;
 	opacity: 0.5;
 }
+input {
+	width: 100%;
+	padding: 10px 15px;
+	border: 1px solid #ddd;
+	font-size: 16px;
+}
 input:focus,button:focus,select:focus {
 	outline: 0;
 }
@@ -48,7 +54,7 @@ input:focus,button:focus,select:focus {
 }
 #container {
 	align-items: center;
-	max-width: 768px;
+	width: 768px;
 	background: #fff;
 }
 
@@ -56,4 +62,26 @@ input:focus,button:focus,select:focus {
 	color: #d20;
 	font-size: 20px;
 	text-align: center;
+}
+
+.inline {
+	flex-direction: row;
+}
+
+#input_area {
+	width: 100%;
+	padding: 25px 30px;
+}
+#input_area input {
+	flex: 1;
+}
+#input_area button {
+	width: fit-content;
+	margin-left: -1px;
+}
+
+#result_area {
+	width: 100%;
+	padding: 25px 45px;
+	border-top: 1px solid #ddd;
 }
