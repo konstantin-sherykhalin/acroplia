@@ -1,5 +1,6 @@
 * {
 	box-sizing: border-box;
+	font-weight: 300;
 }
 body {
 	margin: 0;
@@ -15,6 +16,9 @@ body {
 div {
 	display: flex;
 	flex-direction: column;
+}
+h1 {
+	font-weight: 300;
 }
 p {
 	margin: 0;
@@ -39,7 +43,7 @@ input {
 	width: 100%;
 	padding: 10px 15px;
 	border: 1px solid #ddd;
-	font-size: 16px;
+	font-size: 18px;
 }
 input:focus,button:focus,select:focus {
 	outline: 0;
@@ -68,6 +72,10 @@ input:focus,button:focus,select:focus {
 	flex-direction: row;
 }
 
+#title {
+	margin: 25px 0px 0px;
+}
+
 #input_area {
 	width: 100%;
 	padding: 25px 30px;
@@ -84,4 +92,20 @@ input:focus,button:focus,select:focus {
 	width: 100%;
 	padding: 25px 45px;
 	border-top: 1px solid #ddd;
+}
+#result_show,#result_show div {
+	flex-direction: row;
+	align-items: center;
+}
+#result_show div.divide {
+	flex-direction: column;
+	padding: 0px 5px;
+}
+#result_show div.divide .line {
+	height: 1px; width: 100%;
+	background: #111;
+}
+#result_show div.power .exponent {
+	margin-bottom: 0.7em;
+	font-size: 0.7em;
 }
