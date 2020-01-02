@@ -1,4 +1,4 @@
-import Expression from './expression';
+import {Expression,Variable} from './expression';
 
 export function find_parentheses(input,pos = 0) {
 	let res = [];
@@ -30,14 +30,30 @@ export function find_parentheses(input,pos = 0) {
 			res.push(+token);
 		} else if(['+','-','*','/','^'].includes(input[i])) {
 			res.push(input[i]);
+		} else if('abcdefghijklmnopqrstuvwxyz_'.indexOf(input[i])>=0) {
+			let token = input[i];
+			for(++i; i<input.length; i++) {
+				if('abcdefghijklmnopqrstuvwxyz_0123456789'.indexOf(input[i])>=0) {
+					token += input[i];
+				} else {
+					i--;
+					break;
+				}
+			}
+			res.push(token);
 		}
 	}
 	return res;
 }
 
-export function set_expressions(input) {
+export function set_expressions(input,add_variable) {
 	if(input instanceof Array) {
 		while(input.length>1) {
+			if(input[0] == '-') {
+				input.shift();
+				input[0] = -input[0];
+			}
+
 			let pos = -1;
 			let pow_pos = input.indexOf('^');
 
@@ -71,13 +87,21 @@ export function set_expressions(input) {
 				let left  = input[pos-1],
 					right = input[pos+1];
 
-				if(typeof(left)  != 'number') left  = set_expressions(left);
-				if(typeof(right) != 'number') right = set_expressions(right);
+				if(left  instanceof Array) left  = set_expressions(left,add_variable);
+				if(right instanceof Array) right = set_expressions(right,add_variable);
+
+				if(typeof left  == 'string') {
+					left  = new Variable({name:left});
+					add_variable(left);
+				}
+				if(typeof right == 'string') {
+					right = new Variable({name:right});
+					add_variable(right);
+				}
 
 				input.splice(pos-1,3,new Expression({left,right,operation:input[pos]}));
 			}
 		}
-		console.log("XS");
 		input[0].parentheses = true;
 		return input[0];
 	} else {
