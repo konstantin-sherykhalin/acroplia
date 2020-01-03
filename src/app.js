@@ -75,10 +75,11 @@ export default () => {
 
 		// Создаем поле значений
 		const field = [];
-		for(let x=+vars[0].domain[0]; x<=+vars[0].domain[1]; x+=+vars[0].accuracy) {
-			let y = expression.calc({x});
+		for(let x=+vars[0].domain[0]; x<+vars[0].domain[1]; x+=+vars[0].accuracy) {
+			let y = expression.calc({[vars[0].name]:x});
 			field.push({x,y});
 		}
+		field.push({x:+vars[0].domain[1],y:expression.calc({x:+vars[0].domain[1]})});
 
 		// Устанавливаем границы области
 		let min_x = vars[0].domain[0],
@@ -92,7 +93,7 @@ export default () => {
 		 * Отбросим 5% значений снизу и сверху
 		 * Посчитаем среднее значение, дисперсию и ширину разброса
 		**/
-		let y_field = field.map(e => e.y).sort((a,b) => a-b);
+		let y_field = field.map(e => e.y).filter(y => !isNaN(y)).sort((a,b) => a-b);
 		let y_centered = {};
 		y_centered.field		= y_field.slice(y_field.length*0.05,y_field.length*0.95);
 		y_centered.average		= y_centered.field.reduce((s,c) => s+c,0)/y_centered.field.length;
@@ -101,6 +102,7 @@ export default () => {
 
 		// Теперь, чтобы определить границы по вертикали, используем полученные значения
 		let width = Math.min(Math.max(10*y_centered.dispersion,Math.abs(max_x-min_x)),y_centered.width);
+		if(!width) width = Math.abs(max_x-min_x)/2;
 		min_y = y_centered.average - width;
 		max_y = y_centered.average + width;
 
@@ -115,8 +117,13 @@ export default () => {
 			let x = field[i].x,
 				y = field[i].y;
 
+			// Неопределенность
+			if(isNaN(y)) {
+				ctx.stroke();
+				ctx.beginPath();
+
 			// Ушли в +бесконечность
-			if(y>max_y) {
+			} else if(y>max_y) {
 				ctx.lineTo(scale_x(field[i-1].x),scale_y(max_y));
 				ctx.stroke();
 				ctx.beginPath();
@@ -129,6 +136,11 @@ export default () => {
 
 			// Нормальная точка
 			} else {
+				// Выходим из неопределенности
+				if(isNaN(field[i-1].y)) {
+					ctx.beginPath();
+					ctx.moveTo(scale_x(x),scale_y(y));
+				}
 				// Выходим из бесконечности
 				if(field[i-1].y<min_y || field[i-1].y>max_y) {
 					if(field[i+1].y-y > 0) {
