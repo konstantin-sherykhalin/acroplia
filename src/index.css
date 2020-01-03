@@ -135,6 +135,9 @@ input:focus,button:focus,select:focus {
 	padding: 0px;
 	background: #111;
 }
+.show div.power {
+	margin-right: 2px;
+}
 .show div.power .exponent {
 	margin-bottom: 0.7em;
 	font-size: 0.7em;
