@@ -9,36 +9,39 @@ export class Expression {
 	}
 
 	calc(variables_values = {}) {
-		let left;
-		let right;
+		let left,right;
 
-		if(this.left  		instanceof Expression)	left	= this.left.calc();
+		if(this.left  		instanceof Expression)	left	= this.left.calc(variables_values);
 		else if(this.left	instanceof Variable)	left	= this.left.calc(variables_values);
 		else										left	= this.left;
 
-		if(this.right		instanceof Expression)	right	= this.right.calc();
+		if(this.right		instanceof Expression)	right	= this.right.calc(variables_values);
 		else if(this.right	instanceof Variable)	right	= this.right.calc(variables_values);
 		else										right	= this.right;
 
-		switch(this.operation) {
-			case '+': return left+right;
-			case '-': return left-right;
-			case '*': return left*right;
-			case '/': return left/right;
-			case '^': return Math.pow(left,right);
+		if(this.operation == '+') return left+right;
+		if(this.operation == '-') return left-right;
+		if(this.operation == '*') return left*right;
+		if(this.operation == '/') return left/right;
+		if(this.operation == '^') return Math.pow(left,right);
+		if(this.operation == '') {
+			if(typeof(left) == 'number' && typeof(right) == 'number') return left*right;
+			else if(typeof(left) == 'number')	return left;
+			else if(typeof(right) == 'number')	return right;
+			else return 0;
 		}
 	}
 
 	show() {
-		if(this.operation == '^') this.right.parentheses = false;
-		if(this.operation == '/') {
+		let left,right;
+		let operation = this.operation;
+
+		if(operation == '^' && this.right	instanceof Expression) this.right.parentheses = false;
+		if(operation == '/') {
 			this.parentheses = false;
 			if(this.left  	instanceof Expression) this.left.parentheses  = false;
 			if(this.right	instanceof Expression) this.right.parentheses = false;
 		}
-
-		let left;
-		let right;
 
 		if(this.left  		instanceof Expression)	left	= this.left.show();
 		else if(this.left	instanceof Variable)	left	= this.left.show();
@@ -48,28 +51,41 @@ export class Expression {
 		else if(this.right	instanceof Variable)	right	= this.right.show();
 		else										right	= this.right;
 
-		if(this.operation == '+' && left<0 && right>0) {
-			this.operation = '-';
+		if(operation == '+' && left<0 && right>0) {
+			operation = '-';
 			[left,right] = [right,-left];
 		}
-		if(this.operation == '*' && (this.left instanceof Variable || this.right instanceof Variable)) {
-			this.operation = '';
-			if((this.left instanceof Variable) && !(this.right instanceof Variable)) {
-				[left,right] = [right,left];
+
+		if(operation == '-' && left==0) {
+			left = '';
+		}
+
+		if(operation == '*') {
+			if(this.left instanceof Variable || this.right instanceof Variable) {
+				operation = '';
+				if(this.left instanceof Variable && !(this.right instanceof Variable)) {
+					[left,right] = [right,left];
+				}
+				this.parentheses = false;
 			}
-			this.parentheses = false;
+			if(
+				this.left  instanceof Expression && this.left.parentheses &&
+				this.right instanceof Expression && this.right.parentheses
+			) {
+				operation = '';
+			}
 		}
 
 		let res;
-		if(this.operation == '+') {
+		if(operation == '+') {
 			res = (<div>{left} + {right}</div>);
-		} else if(this.operation == '-') {
+		} else if(operation == '-') {
 			res = (<div>{left} - {right}</div>);
-		} else if(this.operation == '*') {
+		} else if(operation == '*') {
 			res = (<div>{left}&middot;{right}</div>);
-		} else if(this.operation == '') {
+		} else if(operation == '') {
 			res = (<div>{left}{right}</div>);
-		} else if(this.operation == '/') {
+		} else if(operation == '/') {
 			res = (
 				<div className="divide">
 					<div>{left}</div>
@@ -77,7 +93,7 @@ export class Expression {
 					<div>{right}</div>
 				</div>
 			);
-		} else if(this.operation == '^') {
+		} else if(operation == '^') {
 			res = (
 				<div className="power">
 					<div className="base">{left}</div>

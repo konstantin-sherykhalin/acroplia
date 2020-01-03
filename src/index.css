@@ -87,6 +87,17 @@ input:focus,button:focus,select:focus {
 	width: fit-content;
 	margin-left: -1px;
 }
+#input_area p {
+	margin-top: 0.5em;
+}
+#input_area p span {
+	color: #039be5;
+	text-decoration: underline;
+}
+#input_area p span:hover {
+	color: rgb(2,136,209);
+	cursor: pointer;
+}
 
 
 #result_area {
@@ -102,34 +113,40 @@ input:focus,button:focus,select:focus {
 	background: #f9f9f9;
 	text-align: right;
 }
-#show,#show div {
+.show {
+	align-items: center;
+}
+.show + p {
+	margin-top: 10px;
+}
+.show div {
 	flex-direction: row;
 	align-items: center;
 }
-#show div.divide {
+.show div.divide {
 	flex-direction: column;
 	padding: 0px 5px;
 }
-#show div.divide > div {
+.show div.divide > div {
 	padding: 0px 5px;
 }
-#show div.divide .line {
+.show div.divide .line {
 	height: 1px; width: 100%;
 	padding: 0px;
 	background: #111;
 }
-#show div.power .exponent {
+.show div.power .exponent {
 	margin-bottom: 0.7em;
 	font-size: 0.7em;
 }
-#show .variable {
+.show .variable {
 	padding: 0px 3px;
 }
 #vars {
 }
 
 #plot {
-	height:678px; width: 678px;
+	height: 508px; width: 678px;
 	margin-top: 25px;
 	background: #f5f5f5;
 }
