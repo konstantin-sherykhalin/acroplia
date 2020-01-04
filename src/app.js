@@ -40,27 +40,34 @@ export default () => {
 	const calc = () => {
 		set_vars([]);
 
-		// Сперва разбиваем введенное выражение по скобкам
-		let divided = find_parentheses(input.replace(/\s/g,''));
-		if(!(divided instanceof Array)) {
-			set_error('Ошибка в формуле');
+		if(!input) return;
+		if(input.indexOf('=')>=0) {
+			set_error('Это калькулятор, а не решатель уравнений');
 		} else {
 			set_error('');
 
-			// Далее все полученные последовательности операций преобразуем в единичные выражения
-			let expressed = set_expressions(divided,add_variable);
-			if(!expressed) {
+			// Сперва разбиваем введенное выражение по скобкам
+			let divided = find_parentheses(input.replace(/\s/g,''));
+			if(!(divided instanceof Array)) {
 				set_error('Ошибка в формуле');
 			} else {
 				set_error('');
 
-				// Для главного выражения убираем скобки и представляем его
-				expressed.parentheses = false;
-				set_view(expressed.show());
+				// Далее все полученные последовательности операций преобразуем в единичные выражения
+				let expressed = set_expressions(divided,add_variable);
+				if(!expressed) {
+					set_error('Ошибка в формуле');
+				} else {
+					set_error('');
 
-				// Перечисляем найденные переменные и записываем выражение
-				set_vars(list_variables(expressed));
-				set_expression(expressed);
+					// Для главного выражения убираем скобки и представляем его
+					expressed.parentheses = false;
+					set_view(expressed.show());
+
+					// Перечисляем найденные переменные и записываем выражение
+					set_vars(list_variables(expressed));
+					set_expression(expressed);
+				}
 			}
 		}
 	}
@@ -152,7 +159,6 @@ export default () => {
 				// Рисуем линию
 				ctx.lineTo(scale_x(x),scale_y(y));
 			}
-			// console.log(field[i].x,field[i].y);
 		}
 		ctx.stroke();
 		ctx.closePath();

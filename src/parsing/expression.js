@@ -43,8 +43,11 @@ export class Expression {
 		let left,right;
 		let operation = this.operation;
 
-		// Не показываем скобки в показателе степени
-		if(operation == '^' && this.right	instanceof Expression) this.right.parentheses = false;
+		// Не показываем скобки в показателе степени, но показываем, если основание является выражением
+		if(operation == '^') {
+			if(this.left	instanceof Expression) this.left.parentheses  = true;
+			if(this.right	instanceof Expression) this.right.parentheses = false;
+		}
 		// Не показываем скобки в дроби
 		if(operation == '/') {
 			this.parentheses = false;
