@@ -39,11 +39,14 @@ button[disabled],button.disabled {
 	cursor: default;
 	opacity: 0.5;
 }
-input {
+input[type=text],input[type=number] {
 	width: 100%;
 	padding: 10px 15px;
 	border: 1px solid #ddd;
 	font-size: 18px;
+}
+input[type=radio] {
+	margin: 5px;
 }
 input:focus,button:focus,select:focus {
 	outline: 0;
@@ -67,6 +70,19 @@ input:focus,button:focus,select:focus {
 	font-size: 20px;
 	text-align: center;
 }
+.waiting {
+	align-self: center;
+	height: 50px; width: 50px;
+	background: url('http://gonki.me/images/icons/loading.svg');
+	animation-name: spin;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+@keyframes spin {
+    from {transform: rotate(0deg);}
+	to {transform: rotate(360deg);}
+}
 
 .inline {
 	flex-direction: row;
@@ -80,7 +96,7 @@ input:focus,button:focus,select:focus {
 	width: 100%;
 	padding: 25px 30px;
 }
-#input_area input {
+#input_area input[type=text] {
 	flex: 1;
 }
 #input_area button {
@@ -88,7 +104,7 @@ input:focus,button:focus,select:focus {
 	margin-left: -1px;
 }
 #input_area p {
-	margin-top: 0.5em;
+	margin: 0.5em 0px;
 }
 #input_area p span {
 	color: #039be5;
@@ -98,12 +114,22 @@ input:focus,button:focus,select:focus {
 	color: rgb(2,136,209);
 	cursor: pointer;
 }
+#input_area label {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0px 5px;
+}
 
 
 #result_area {
 	width: 100%;
 	padding: 25px 45px;
 	border-top: 1px solid #ddd;
+}
+
+#result_area img {
+	max-width: 100%;
 }
 
 #vars .variable_row input {

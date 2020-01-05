@@ -125,7 +125,7 @@ export class Expression {
 
 // Переменная
 export class Variable {
-	constructor({name,domain = [-10,10],accuracy = 0.1}) {
+	constructor({name,domain = [-10,10],accuracy = 0.01}) {
 		this.name = name;
 		this.domain = domain;
 		this.accuracy = accuracy;
