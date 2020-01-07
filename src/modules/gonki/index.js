@@ -27,7 +27,6 @@ export default ({input}) => {
 
 	} else {
 		// Сперва разбиваем введенное выражение по скобкам
-		if(input[0]=='(' && input[input.length-1]==')') input = input.substring(1,input.length-1);
 		let divided = find_parentheses(input.replace(/\s/g,''));
 		if(!(divided instanceof Array)) {
 			error = 'Ошибка в формуле';
@@ -48,7 +47,7 @@ export default ({input}) => {
 
 	useEffect(_ => {
 		// Перечисляем найденные переменные и записываем выражение
-		set_vars(list_variables(expression));
+		if(expression) set_vars(list_variables(expression));
 	},[input]);
 
 	useEffect(_ => {
