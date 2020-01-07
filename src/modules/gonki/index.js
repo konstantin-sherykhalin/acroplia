@@ -6,9 +6,12 @@ import {find_parentheses,set_expressions,list_variables} from './parsing/functio
 export default ({input}) => {
 	if(!input) return null;
 
-	const [error,set_error]		= useState('');	// Ошибки
 	const [vars,set_vars]		= useState([]);	// Переменные
 	const [result,set_result]	= useState('');	// Результат вычислений
+
+	let error = '',
+		expression = null,
+		view = null;
 
 	// Работа со списком переменных
 	const add_variable = (v) => {
@@ -18,37 +21,35 @@ export default ({input}) => {
 		set_vars(vars.map(e => e.name==v.name ? v : e));
 	}
 
-	let expression = null,
-		view = null;
-
 	// Вычисление результата
 	if(input.indexOf('=')>=0) {
-		set_error('Это калькулятор, а не решатель уравнений');
+		error = 'Это калькулятор, а не решатель уравнений';
 
 	} else {
 		// Сперва разбиваем введенное выражение по скобкам
+		if(input[0]=='(' && input[input.length-1]==')') input = input.substring(1,input.length-1);
 		let divided = find_parentheses(input.replace(/\s/g,''));
 		if(!(divided instanceof Array)) {
-			set_error('Ошибка в формуле');
+			error = 'Ошибка в формуле';
 
 		} else {
 			// Далее все полученные последовательности операций преобразуем в единичные выражения
 			expression = set_expressions(divided,add_variable);
 			if(!expression) {
-				set_error('Ошибка в формуле');
+				error = 'Ошибка в формуле';
 
 			} else {
 				// Для главного выражения убираем скобки и представляем его
 				expression.parentheses = false;
 				view = expression.show();
-
-				// Перечисляем найденные переменные и записываем выражение
-				useEffect(_ => {
-					if(expression) set_vars(list_variables(expression));
-				},[]);
 			}
 		}
 	}
+
+	useEffect(_ => {
+		// Перечисляем найденные переменные и записываем выражение
+		set_vars(list_variables(expression));
+	},[input]);
 
 	useEffect(_ => {
 		// Переменных нет, можно посчитать

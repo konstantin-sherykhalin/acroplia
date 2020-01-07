@@ -24,7 +24,15 @@ export default () => {
 		inp.current.focus();
 	}
 	const calc = () => {
-		set_input(input_value);
+		let input = input_value;
+		let opened = [...input.matchAll(/\(/g)];
+		let closed = [...input.matchAll(/\)/g)];
+		if(opened.length != closed.length) {
+			if(opened.length > closed.length) input += ''.padStart(opened.length-closed.length,')');
+			if(opened.length < closed.length) input = ''.padStart(closed.length-opened.length,'(') + input;
+			set_input_value(input);
+		}
+		set_input(input);
 	}
 
 	return (

@@ -3,16 +3,22 @@ import {Expression,Variable} from './expression';
 // Разбор строки на выражения в скобках
 export function find_parentheses(input,pos = 0) {
 	let res = [];
+	if('+-*/^'.indexOf(input[input.length-1])>=0) return NaN;
 	for(let i=pos; i<input.length; i++) {
 		// Открыли скобку, все внутри записываем во вложенную структуру
 		if(input[i] == '(') {
 			if(input[i-1] == ')') res.push('*');
 			let inside = find_parentheses(input,i+1);
-			res.push(inside.res);
-			i = inside.pos;
+			if(inside.res instanceof Array) {
+				res.push(inside.res);
+				i = inside.pos;
+			} else {
+				return NaN;
+			}
 
 		// Закрыли скобку, вернулись на уровень выше
 		} else if(input[i] == ')') {
+			if('+-*/^'.indexOf(input[i-1])>=0) return NaN;
 			return {res,pos:i};
 
 		// Число, может стоять после скобок, знаков операций, переменных, в начале строки
@@ -68,8 +74,9 @@ export function set_expressions(input) {
 		// Если только один операнд
 		if(input.length == 1) {
 			let right;
-			if(input[0]  instanceof Array)	right  = set_expressions(input[0]);
-			if(typeof input[0] == 'string')	right = new Variable({name:input[0]});
+			if(input[0]  instanceof Array)			right = set_expressions(input[0]);
+			else if(typeof input[0] == 'string')	right = new Variable({name:input[0]});
+			else									right = input[0];
 			input[0] = new Expression({left:'',right,operation:''});
 
 		// Иначе постепенно сокращаем набор операций до дерева выражений
